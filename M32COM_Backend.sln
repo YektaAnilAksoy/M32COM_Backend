@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M32COM_Backend", "M32COM_Backend\M32COM_Backend.csproj", "{6295BA56-FBAD-4916-BBAB-023CFA987494}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M32COM_Backend.Tests", "M32COM_Backend.Tests\M32COM_Backend.Tests.csproj", "{610C305E-EE32-4D6E-A00A-E260C1A42D89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6295BA56-FBAD-4916-BBAB-023CFA987494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6295BA56-FBAD-4916-BBAB-023CFA987494}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6295BA56-FBAD-4916-BBAB-023CFA987494}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6295BA56-FBAD-4916-BBAB-023CFA987494}.Release|Any CPU.Build.0 = Release|Any CPU
+		{610C305E-EE32-4D6E-A00A-E260C1A42D89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{610C305E-EE32-4D6E-A00A-E260C1A42D89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{610C305E-EE32-4D6E-A00A-E260C1A42D89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{610C305E-EE32-4D6E-A00A-E260C1A42D89}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {28AA27DA-2774-4235-BA74-CEDD99A8B169}
+	EndGlobalSection
+EndGlobal
