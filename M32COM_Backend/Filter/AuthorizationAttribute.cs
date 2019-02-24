@@ -1,9 +1,12 @@
-﻿using M32COM_Backend.Models;
+﻿using M32COM_Backend.constants;
+using M32COM_Backend.DTOs;
+using M32COM_Backend.Models;
 using M32COM_Backend.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Text;
@@ -16,15 +19,24 @@ namespace M32COM_Backend.Filter
 {
 	public class AuthorizationAttribute :AuthorizationFilterAttribute
 	{
+		CustomResponse response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Unauthorized, true, null, ConstantResponse.UNAUTHORIZED_ACTION);
+
 		public override void OnAuthorization(HttpActionContext actionContext)
 		{
+			//This is for Skipping auth if needed
+			if (actionContext.ActionDescriptor.GetCustomAttributes<SkipAuthFilterAttribute>().Any())
+			{
+				return;
+			}
+
 			if(actionContext.Request.Headers.Authorization == null)
 			{
-				actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized);
+
+				actionContext.Response = actionContext.Request.CreateResponse<CustomResponse>(HttpStatusCode.Unauthorized, response);
 			}
 			else
 			{
-				UserToken loginUser = null;
+				UserTokenDTO loginUser = null;
 				try
 				{
 					//Gets token key from header
@@ -33,8 +45,8 @@ namespace M32COM_Backend.Filter
 					//Decrypts token key 
 					var jsonString = FTH.Extension.Encrypter.Decrypt(tokenKey, LoginUtility.PRIVATE_KEY);
 
-					//Deserializes json string to get user object
-					loginUser = JsonConvert.DeserializeObject<UserToken>(jsonString);
+					//Deserializes json string to get UserToken object
+					loginUser = JsonConvert.DeserializeObject<UserTokenDTO>(jsonString);
 
 					#region - Old Basic Authorization -
 					//Converting token key base64 to string and encode it as UTF8
@@ -46,18 +58,18 @@ namespace M32COM_Backend.Filter
 				}
 				catch
 				{
-					actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized);
+					actionContext.Response = actionContext.Request.CreateResponse<CustomResponse>(HttpStatusCode.Unauthorized, response);
 					return;
 				}
 
-
-				if (LoginUtility.EmailAndPassword(loginUser.email, loginUser.password) && DateTime.Compare(DateTime.Now, loginUser.expireDate) < 0)
+				User user = LoginUtility.GetUserByEmailAndPassword(loginUser.email, loginUser.password);
+				if (user != null && DateTime.Compare(DateTime.Now, loginUser.expireDate) < 0)
 				{
 					Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity(loginUser.email), null);
 				}
 				else
 				{
-					actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized);
+					actionContext.Response = actionContext.Request.CreateResponse<CustomResponse>(HttpStatusCode.Unauthorized, response);
 				}
 			}
 		}

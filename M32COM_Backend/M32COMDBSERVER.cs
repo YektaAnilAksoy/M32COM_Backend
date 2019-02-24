@@ -25,6 +25,10 @@ namespace M32COM_Backend
 		public virtual DbSet<User> Users { get; set; }
 		public virtual DbSet<Team> Teams { get; set; }
 		public virtual DbSet<Log> Logs { get; set; }
+		public virtual DbSet<Competition> Competitions { get; set; }
+		public virtual DbSet<Boat> Boats { get; set; }
+		public virtual DbSet<Notification> Notifications { get; set; }
+
 	}
 
 	//public class MyEntity
