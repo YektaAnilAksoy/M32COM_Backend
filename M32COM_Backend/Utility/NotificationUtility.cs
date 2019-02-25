@@ -12,7 +12,6 @@ namespace M32COM_Backend.Utility
 		{
 				Notification notification = new Notification();
 
-				notification.sentBy = sender.id;
 				notification.sentTime = DateTime.Now;
 				notification.isActive = true;
 				notification.description = sender.name + " " + sender.surname + " has invited you to join " + sender.team.name;

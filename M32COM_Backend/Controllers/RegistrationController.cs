@@ -1,5 +1,6 @@
 ﻿using M32COM_Backend.constants;
 using M32COM_Backend.Filter;
+using M32COM_Backend.Mappers;
 using M32COM_Backend.Models;
 using M32COM_Backend.Utility;
 using System;
@@ -26,9 +27,8 @@ namespace M32COM_Backend.Controllers
 				if (UserUtility.IsEmailUnique(user.email)){
 					DB.Users.Add(user);
 					DB.SaveChanges();
-					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Created, false, ConstantResponse.OK, ConstantResponse.USER_CREATED);
+					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Created, false, GenericMapper.MapToUserDTO(user), ConstantResponse.USER_CREATED);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.Created, response);
-
 				}
 				//Email in use
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.EMAIL_IN_USE);

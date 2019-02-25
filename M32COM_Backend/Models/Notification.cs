@@ -14,13 +14,16 @@ namespace M32COM_Backend.Models
 		[Key]
 		public int id { get; set; }
 
-		[Required]
-		public int  sentBy { get; set; }
+		
+		public virtual User  sentBy { get; set; }
 
-		[Required]
-		public  User receivedBy { get; set; }
+		public  virtual User receivedBy { get; set; }
 
-		public int receivedById { get; set; }
+		[ForeignKey("receivedBy")]
+		public int? receivedById { get; set; }
+
+		[ForeignKey("sentBy")]
+		public int? sentById { get; set; }
 
 		[Required]
 		public string description { get; set; }

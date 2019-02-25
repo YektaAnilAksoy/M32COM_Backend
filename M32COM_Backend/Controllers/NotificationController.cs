@@ -1,4 +1,5 @@
 ﻿using M32COM_Backend.constants;
+using M32COM_Backend.DTOs;
 using M32COM_Backend.Filter;
 using M32COM_Backend.Models;
 using M32COM_Backend.Utility;
@@ -24,9 +25,14 @@ namespace M32COM_Backend.Controllers
 		{
 			var token = Request.Headers.Authorization.Parameter;
 			User user = UserUtility.GetUserByToken(token);
-			var data = user.receivedNotification.ToList();
-			CustomResponse response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, data, ConstantResponse.NOTIFICATION_ALL_SUCCESS);
-			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
+			using(M32COMDBSERVER DB = new M32COMDBSERVER())
+			{
+				List<NotificationDTO> data = DB.Notifications.Where(x => x.isActive == true && x.receivedById == user.id).Select(x => new NotificationDTO { id = x.id, receivedById = x.receivedById, receivedByNameSurname = x.receivedBy.name + " " + x.receivedBy.surname, sentById = x.sentById, sentByNameSurname = x.sentBy.name + " " + x.sentBy.surname, actionToken = x.actionToken, description = x.description, sentTime = x.sentTime }).ToList();
+				CustomResponse response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, data, ConstantResponse.NOTIFICATION_ALL_SUCCESS);
+				return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
+			}
+			
+			
 		}
     }
 }

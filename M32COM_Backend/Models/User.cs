@@ -14,6 +14,7 @@ namespace M32COM_Backend.Models
 		public User()
 		{
 			receivedNotification = new List<Notification>();
+			sentNotification = new List<Notification>();
 		}
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -41,6 +42,9 @@ namespace M32COM_Backend.Models
 
 		public int? teamId { get; set; }
 
+		[InverseProperty("receivedBy")]
 		public virtual ICollection<Notification> receivedNotification { get; set; }
+		[InverseProperty("sentBy")]
+		public virtual ICollection<Notification> sentNotification { get; set; }
 	}
 }

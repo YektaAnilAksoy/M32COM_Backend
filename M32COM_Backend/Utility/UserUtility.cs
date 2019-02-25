@@ -48,7 +48,7 @@ namespace M32COM_Backend.Utility
 		{
 			using(M32COMDBSERVER DB = new M32COMDBSERVER())
 			{
-				return DB.Users.Include(x=>x.receivedNotification).Include(x=>x.team).Include(x=>x.team.boat).First(x => x.email == email);
+				return DB.Users.Include(x=>x.receivedNotification).Include(x=>x.sentNotification).Include(x=>x.team).Include(x=>x.team.boat).First(x => x.email == email);
 			}
 		}
 

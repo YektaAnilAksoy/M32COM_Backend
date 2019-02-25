@@ -65,13 +65,19 @@ namespace M32COM_Backend.Mappers
 			};
 		}
 
-		//public static NotificationDTO MapToNotificationDTO(Notification notification)
-		//{
-		//	return new NotificationDTO
-		//	{
-		//		id = notification.id,
-		//		sentBy = notification.sentBy
-		//	}
-		//}
+		public static NotificationDTO MapToNotificationDTO(Notification notification)
+		{
+			return new NotificationDTO
+			{
+				id = notification.id,
+				sentById = notification.sentById,
+				sentByNameSurname = notification.sentBy.name + " " + notification.sentBy.surname,
+				receivedById = notification.receivedById,
+				receivedByNameSurname = notification.receivedBy.name + " " + notification.receivedBy.surname,
+				actionToken = notification.actionToken,
+				description = notification.description,
+				sentTime = notification.sentTime
+			};
+		}
 	}
 }

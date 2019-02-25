@@ -135,20 +135,31 @@ namespace M32COM_Backend.Controllers
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.TEAM_INVITE_SENDER_ERR);
 
 				return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
+			}else if(sender.email == emailDTO.email)
+			{
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.TEAM_INVITE_YOURSELF);
+
+				return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
 			}
 
 			//Adds the notification to  the receiver's notification list
 			using (M32COMDBSERVER DB = new M32COMDBSERVER())
 			{
 				User receiver = DB.Users.Where(x => x.email == emailDTO.email).FirstOrDefault();
+				User senderLocal = DB.Users.Where(x => x.email == sender.email).FirstOrDefault();
 				if(receiver == null)
 				{
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.TEAM_INVITE_RECEIVER_ERR);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
+				}else if(receiver.team != null)
+				{
+					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.TEAM_INVITE_RECEIVER_HAS_TEAM);
+					return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
 				}
 
-				Notification notification = NotificationUtility.CreateForTeam(sender);
+				Notification notification = NotificationUtility.CreateForTeam(senderLocal);
 				notification.receivedBy = receiver;
+				notification.sentBy = senderLocal;
 				DB.Notifications.Add(notification);
 				DB.SaveChanges();
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, ConstantResponse.OK, ConstantResponse.TEAM_INVITE_SUCCESS);
@@ -190,7 +201,7 @@ namespace M32COM_Backend.Controllers
 				Notification notification = DB.Notifications.Where(x => x.actionToken == actionToken).FirstOrDefault();
 
 				//invalid notification check
-				if (notification == null || !notification.isActive || notification.receivedById != loginUser.id)
+				if (notification == null || !notification.isActive || notification.receivedBy.id != loginUser.id)
 				{
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Forbidden, true, null, ConstantResponse.TEAM_RESPOND_INVALID_NOTIFICATION);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.Forbidden, response);
@@ -201,14 +212,15 @@ namespace M32COM_Backend.Controllers
 				//Rejection check
 				if (!accept)
 				{
-					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, null, ConstantResponse.TEAM_RESPOND_REJECTED);
-					return Request.CreateResponse(HttpStatusCode.OK,response);
+					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, ConstantResponse.REJECTED, ConstantResponse.TEAM_RESPOND_REJECTED);
 				}
-
-				//receiver is added to the team where sender is the leader
-				loginUser.teamId = DB.Users.Include(b => b.team).Include(x => x.team.boat).Where(x => x.id == notification.sentBy).Select(x => x.teamId).SingleOrDefault();
+				else
+				{
+					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, ConstantResponse.ACCEPTED, ConstantResponse.TEAM_RESPOND_ACCEPTED);
+					//receiver is added to the team where sender is the leader
+					loginUser.teamId = DB.Users.Include(b => b.team).Include(x => x.team.boat).Where(x => x.id == notification.sentBy.id).Select(x => x.teamId).SingleOrDefault();
+				}			
 				DB.SaveChanges();
-				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, null, ConstantResponse.TEAM_RESPOND_ACCEPTED);
 				return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK,response);
 			}
 		}
@@ -255,7 +267,7 @@ namespace M32COM_Backend.Controllers
 			{
 				if(teamId != null)
 				{
-					IEnumerable<UserDTO> result = DB.Users.Include(x => x.team).Where(x => x.team.id == teamId).Select(x => new UserDTO { id = x.id, name = x.name, surname = x.surname, email = x.email }).ToList();
+					IEnumerable<UserDTO> result = DB.Users.Include(x => x.team).Where(x => x.team.id == teamId).Select(x => new UserDTO { id = x.id, name = x.name, surname = x.surname, email = x.email,teamName = x.team.name }).ToList();
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, result, ConstantResponse.OK);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
 				}
