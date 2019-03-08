@@ -14,7 +14,7 @@ namespace M32COM_Backend.Models
 		public Team()
 		{
 			teamMembers = new List<User>();
-			Competitions = new List<Competition>();
+			Competitions = new List<TeamCompetition>();
 		}
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -33,6 +33,6 @@ namespace M32COM_Backend.Models
 		public virtual Boat boat { get; set; }
 
 		public virtual ICollection<User> teamMembers { get; set; }
-		public virtual ICollection<Competition> Competitions { get; set; }
+		public virtual ICollection<TeamCompetition> Competitions { get; set; }
 	}
 }

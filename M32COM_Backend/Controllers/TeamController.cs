@@ -9,7 +9,6 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using M32COM_Backend.constants;
 using M32COM_Backend.DTOs;
 using M32COM_Backend.Mappers;
@@ -182,7 +181,7 @@ namespace M32COM_Backend.Controllers
 			{
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, null, ConstantResponse.TEAM_RESPOND_MISSING_ACTIONTOKEN);
 
-				return Request.CreateResponse(HttpStatusCode.BadRequest, response);
+				return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
 
 			}
 
@@ -236,16 +235,21 @@ namespace M32COM_Backend.Controllers
 			//Control whether the user is leader or not
 			if(sender.team == null || sender.team.leaderId != sender.id)
 			{
-				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Unauthorized, true, null, ConstantResponse.TEAM_BOAT_FAILED);
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Unauthorized, true, HttpStatusCode.Unauthorized, ConstantResponse.TEAM_BOAT_FAILED);
 				return Request.CreateResponse(HttpStatusCode.Unauthorized, response);
+			}else if(sender.team.boat != null)
+			{
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, HttpStatusCode.BadRequest, ConstantResponse.TEAM_BOAT_ALREADY_HAVE_BOAT);
+				return Request.CreateResponse(HttpStatusCode.BadRequest, response);
 			}
-
 			//Adds the boat to the team
 			using (M32COMDBSERVER DB = new M32COMDBSERVER())
 			{
-				boat.id = (int)sender.teamId;
-				boat.team = sender.team;
-				DB.Boats.Add(boat);
+				Team senderTeam = DB.Teams.Where(x => x.id == sender.teamId).FirstOrDefault();
+				senderTeam.boat = boat;
+				//boat.id = senderTeam.id;
+				//boat.team = senderTeam;
+				//DB.Boats.Add(boat);
 				DB.SaveChanges();
 				BoatDTO boatDTO = GenericMapper.MapToBoatDTO(boat);
 

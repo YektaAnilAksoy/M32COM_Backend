@@ -28,6 +28,7 @@ namespace M32COM_Backend
 		public virtual DbSet<Competition> Competitions { get; set; }
 		public virtual DbSet<Boat> Boats { get; set; }
 		public virtual DbSet<Notification> Notifications { get; set; }
+		public virtual DbSet<TeamCompetition>  TeamCompetitions { get; set; }
 
 	}
 

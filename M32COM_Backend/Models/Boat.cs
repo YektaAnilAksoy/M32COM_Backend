@@ -22,7 +22,7 @@ namespace M32COM_Backend.Models
 		[Required(ErrorMessage = "Year is required!")]
 		public int year { get; set; }
 
-		
+		public int teamId { get; set; }
 		public virtual Team team { get; set; }
 
 	}

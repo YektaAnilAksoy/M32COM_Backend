@@ -12,7 +12,7 @@ namespace M32COM_Backend.Models
 	{
 		public Competition()
 		{
-			teams = new List<Team>();
+			teams = new List<TeamCompetition>();
 		}
 
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -32,11 +32,7 @@ namespace M32COM_Backend.Models
 		[Required(ErrorMessage = "Competition end date is required!")]
 		public DateTime endDate { get; set; }
 
-		[ForeignKey("winnerID")]
-		public virtual Team winner { get; set; }
 
-		public int winnerID { get; set; }
-
-		public  virtual ICollection<Team> teams { get; set; }
+		public  virtual ICollection<TeamCompetition> teams { get; set; }
 	}
 }
