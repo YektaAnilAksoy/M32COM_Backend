@@ -11,6 +11,9 @@ namespace M32COM_Backend.Mappers
 	{
 		public static UserDTO MapToUserDTO(User user)
 		{
+			if (user == null)
+				return null;
+
 			return new UserDTO
 			{
 				id = user.id,
@@ -40,6 +43,9 @@ namespace M32COM_Backend.Mappers
 
 		public static TeamDTO MapToTeamDTO(Team team)
 		{
+			if (team == null)
+				return null;
+
 			TeamDTO teamDTO = new TeamDTO()
 			{
 				id = team.id,
@@ -56,6 +62,9 @@ namespace M32COM_Backend.Mappers
 
 		public static BoatDTO MapToBoatDTO(Boat boat)
 		{
+			if (boat == null)
+				return null;
+
 			return new BoatDTO
 			{
 				id = boat.id,
@@ -67,6 +76,9 @@ namespace M32COM_Backend.Mappers
 
 		public static NotificationDTO MapToNotificationDTO(Notification notification)
 		{
+			if (notification == null)
+				return null;
+
 			return new NotificationDTO
 			{
 				id = notification.id,
@@ -77,6 +89,31 @@ namespace M32COM_Backend.Mappers
 				actionToken = notification.actionToken,
 				description = notification.description,
 				sentTime = notification.sentTime
+			};
+		}
+
+		public static CompetitionDTO MapToCompetitionDTO(Competition competition)
+		{
+			if (competition == null)
+				return null;
+
+			List<Team> tempTeam = new List<Team>();
+			foreach(TeamCompetition t in competition.teams)
+			{
+				tempTeam.Add(t.team);
+			}
+
+			ICollection<TeamDTO> tempTeamDTOs = new List<TeamDTO>();
+			tempTeam.ForEach(t => tempTeamDTOs.Add(MapToTeamDTO(t)));
+
+			return new CompetitionDTO
+			{
+				id = competition.id,
+				name = competition.name,
+				description = competition.description,
+				startDate = competition.startDate,
+				endDate = competition.endDate,
+				teamDTOs = tempTeamDTOs
 			};
 		}
 	}
