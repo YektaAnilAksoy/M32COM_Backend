@@ -34,10 +34,11 @@ namespace M32COM_Backend.Models
 		public string email { get; set; }
 
 		[Required(ErrorMessage = "Password is required!")]
-		[StringLength(20, ErrorMessage = "Password length must be between 6-20",MinimumLength = 6)]
+		[StringLength(512, ErrorMessage = "Password length must be between 6-512",MinimumLength = 6)]
 		public string password { get; set; }
 
-
+		public string passwordSalt { get; set; }
+		
 		public virtual Team team { get; set; }
 
 		public int? teamId { get; set; }

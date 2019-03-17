@@ -97,23 +97,49 @@ namespace M32COM_Backend.Mappers
 			if (competition == null)
 				return null;
 
-			List<Team> tempTeam = new List<Team>();
-			foreach(TeamCompetition t in competition.teams)
-			{
-				tempTeam.Add(t.team);
-			}
-
-			ICollection<TeamDTO> tempTeamDTOs = new List<TeamDTO>();
-			tempTeam.ForEach(t => tempTeamDTOs.Add(MapToTeamDTO(t)));
-
 			return new CompetitionDTO
 			{
 				id = competition.id,
 				name = competition.name,
 				description = competition.description,
 				startDate = competition.startDate,
-				endDate = competition.endDate,
-				teamDTOs = tempTeamDTOs
+				endDate = competition.endDate
+			};
+		}
+
+		public static TeamResultDTO MapToTeamResultDTO(Team team,DateTime finishTime)
+		{
+			ICollection<String> teamMembers = new List<String>();
+
+			foreach(User user in team.teamMembers)
+			{
+				teamMembers.Add(user.name);
+			}
+
+			return new TeamResultDTO
+			{
+				name = team.name,
+				members = teamMembers,
+				finishTime = finishTime
+			};
+		}
+
+		public static CompetitionResultDTO MapToCompetitionResultDTO(List<TeamCompetition> teamCompetitions)
+		{
+			if (teamCompetitions == null)
+				return null;
+
+			ICollection<TeamResultDTO> teamResults = new List<TeamResultDTO>();
+
+			foreach(TeamCompetition teamComp in teamCompetitions)
+			{
+				teamResults.Add(MapToTeamResultDTO(teamComp.team, teamComp.finishTime));
+			}
+
+			return new CompetitionResultDTO
+			{
+				competition = MapToCompetitionDTO(teamCompetitions.First().competition),
+				teams = teamResults
 			};
 		}
 	}

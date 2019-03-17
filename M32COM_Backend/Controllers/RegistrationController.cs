@@ -24,7 +24,11 @@ namespace M32COM_Backend.Controllers
 
 			using(M32COMDBSERVER DB = new M32COMDBSERVER())
 			{
-				if (UserUtility.IsEmailUnique(user.email)){
+				if (UserUtility.IsEmailUnique(user.email))
+				{
+					var salt = PasswordHashingUtility.GenerateSalt();
+					user.password = PasswordHashingUtility.GenerateSaltedHash(user.password,salt);
+					user.passwordSalt = salt;
 					DB.Users.Add(user);
 					DB.SaveChanges();
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.Created, false, GenericMapper.MapToUserDTO(user), ConstantResponse.USER_CREATED);

@@ -41,7 +41,11 @@ namespace M32COM_Backend.constants
 		public const string COMPETITION_APPLIED_SUCCESS = "The application has sucessfully been received!";
 		public const string COMPETITITON_APPLIED_NO_COMP_FOUND = "There is no such a competition!";
 		public const string COMPETITION_APPLIED_NOT_TEAMLEADER = "The user is not the team leader!";
-		
+		public const string COMPETITION_APPLIED_NOT_ACTIVE = "The competition applied for is not active!";
+		public const string COMPETITION_APPLIED_ALREADY = "The team has already applied for the competition!";
+		public const string COMPETITION_PASSIVES_SUCCESS = "Passive competitions has successfully been retrieved!";
+		public const string COMPETITION_RESULT_NOT_FOUND = "There is no such competition result related with the given id!";
+		public const string COMPETITION_RESULT_SUCCESS = "The result of The competition has successfully been retrieved!";
 	}
 
 }

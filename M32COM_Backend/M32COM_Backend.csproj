@@ -181,9 +181,11 @@
     <Compile Include="Constants\ConstantResponse.cs" />
     <Compile Include="DTOs\BoatDTO.cs" />
     <Compile Include="DTOs\CompetitionDTO.cs" />
+    <Compile Include="DTOs\CompetitionResultDTO.cs" />
     <Compile Include="DTOs\LoginResponseDTO.cs" />
     <Compile Include="DTOs\NotificationDTO.cs" />
     <Compile Include="DTOs\TeamDTO.cs" />
+    <Compile Include="DTOs\TeamResultDTO.cs" />
     <Compile Include="Filter\ActionAttribute.cs" />
     <Compile Include="Filter\AuthorizationAttribute.cs" />
     <Compile Include="Filter\ErrorAttribute.cs" />
@@ -215,6 +217,7 @@
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\LoginUtility.cs" />
     <Compile Include="Utility\NotificationUtility.cs" />
+    <Compile Include="Utility\PasswordHashingUtility.cs" />
     <Compile Include="Utility\ResponseMessageHelper.cs" />
     <Compile Include="Utility\TeamUtility.cs" />
     <Compile Include="Utility\UserUtility.cs" />
