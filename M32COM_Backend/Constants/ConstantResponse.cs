@@ -35,6 +35,7 @@ namespace M32COM_Backend.constants
 		public const string TEAM_BOAT_ALREADY_HAVE_BOAT = "The team has already have a boat";
 		public const string TEAM_GET_MEMBERS = "The user does not have a team";
 		public const string NOTIFICATION_ALL_SUCCESS = "User notifications have been retrieved!";
+		public const string COMPETITION_ALL_RETRIEVE_SUCCESS = "All competitions have successfully been retrieved!";
 		public const string COMPETITION_RETRIEVE_SUCCESS = "Active competitions have successfully been retrieved!";
 		public const string COMPETITION_RETRIEVE_BY_ID_NOT_FOUND = "There is no competition with the given id!";
 		public const string COMPETITION_RETRIEVE_BY_ID_SUCCESS = "The competition has successfully been retrieved!";

@@ -23,11 +23,33 @@ namespace M32COM_Backend.Controllers
 	{
 		private M32COMDBSERVER DB = new M32COMDBSERVER();
 
+
+		[HttpGet]
+		[Route("get/all")]
+		public HttpResponseMessage GetAllCompetitions()
+		{
+			//Retrieves all comps from db
+			var allComps = DB.Competitions.ToList();
+
+			//Null check
+			if (allComps == null)
+				allComps = new List<Competition>();
+
+			//Maps comps to the dto
+			ICollection<CompetitionDTO> competitionDTOs = new List<CompetitionDTO>();
+			allComps.ForEach(c => competitionDTOs.Add(GenericMapper.MapToCompetitionDTO(c)));
+
+			//Returns data
+			CustomResponse response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, competitionDTOs, ConstantResponse.COMPETITION_ALL_RETRIEVE_SUCCESS);
+			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
+
+		}
+
 		[HttpGet]
 		[Route("get/active")]
 		public HttpResponseMessage GetActiveCompetitions()
 		{
-			//Gets active comps from db
+			//Retrieves active comps from db
 			var activeCompetitions = DB.Competitions.Where(x => x.endDate > DateTime.Now).OrderByDescending(x => x.startDate).ToList();
 
 			//Null check
