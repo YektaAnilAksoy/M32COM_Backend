@@ -32,7 +32,10 @@ namespace M32COM_Backend.constants
 		public const string TEAM_RESPOND_ACCEPTED = "The user has accepted the team invitation!";
 		public const string TEAM_BOAT_SUCCESS = "The boat has successfully been added to the team!";
 		public const string TEAM_BOAT_FAILED = "The user is not the team leader!";
-		public const string TEAM_BOAT_ALREADY_HAVE_BOAT = "The team has already have a boat";
+		public const string TEAM_BOAT_ALREADY_HAVE_BOAT = "The team has already have a boat!";
+		public const string TEAM_BOAT_GET_NO_TEAM = "The user does not have a team!";
+		public const string TEAM_BOAT_GET_NO_BOAT = "The team does not have a boat!";
+		public const string TEAM_BOAT_GET_SUCCESS = "The boat has successfully been retrieved!";
 		public const string TEAM_GET_MEMBERS = "The user does not have a team";
 		public const string NOTIFICATION_ALL_SUCCESS = "User notifications have been retrieved!";
 		public const string COMPETITION_ALL_RETRIEVE_SUCCESS = "All competitions have successfully been retrieved!";

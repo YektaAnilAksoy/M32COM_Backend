@@ -259,6 +259,32 @@ namespace M32COM_Backend.Controllers
 		}
 
 		[HttpGet]
+		[Route("get/boat")]
+		public HttpResponseMessage GetBoat()
+		{
+			var token = Request.Headers.Authorization.Parameter;
+			User sender = UserUtility.GetUserByToken(token);
+			CustomResponse response;
+
+			if(sender.team == null)
+			{
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, null, ConstantResponse.TEAM_BOAT_GET_NO_TEAM);
+			}
+			else if(sender.team.boat == null)
+			{
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, null, ConstantResponse.TEAM_BOAT_GET_NO_BOAT);
+			}
+			else
+			{
+				BoatDTO boatDTO = GenericMapper.MapToBoatDTO(sender.team.boat);
+
+				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, boatDTO, ConstantResponse.TEAM_BOAT_GET_SUCCESS);
+			}
+
+			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
+		}
+
+		[HttpGet]
 		[Route("members")]
 		public HttpResponseMessage GetTeamMembers()
 		{
