@@ -1,5 +1,6 @@
 ﻿using M32COM_Backend.Filter;
 using M32COM_Backend.Models;
+using M32COM_Backend.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,30 +15,23 @@ namespace M32COM_Backend.Controllers
 	[AuthorizationAttribute]
 	public class UserController : ApiController
 	{
-		M32COMDBSERVER DB = new M32COMDBSERVER();
+		IUserRepository _repository;
+
+		public UserController(IUserRepository repository)
+		{
+			_repository = repository;
+		}
 
 		
-		public IEnumerable<User> Get()
-		{
 
-			return DB.Users.ToList();
+		public User GetById(int id)
+		{
+			return _repository.GetById(id);
 		}
 
-		public IEnumerable<Notification> getUserNotifications()
+		public User GetByEmail(string email)
 		{
-			return new List<Notification>();
+			return _repository.GetByEmail(email);
 		}
-		public User Get(int id)
-		{
-			return DB.Users.FirstOrDefault(x => x.id == id);
-		}
-
-		public void Post(User user)
-		{
-			DB.Users.Add(user);
-			DB.SaveChanges();
-		}
-
-
 	}
 }

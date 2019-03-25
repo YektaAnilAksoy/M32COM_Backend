@@ -3,6 +3,7 @@ using M32COM_Backend.DTOs;
 using M32COM_Backend.Filter;
 using M32COM_Backend.Mappers;
 using M32COM_Backend.Models;
+using M32COM_Backend.Repositories;
 using M32COM_Backend.Utility;
 using Newtonsoft.Json;
 using System;
@@ -20,6 +21,14 @@ namespace M32COM_Backend.Controllers
 	public class LoginController : ApiController
     {
 		private const int TOKEN_EXPIRE_DAY = 1;
+		
+		public readonly ILoginRepository _repository;
+
+		//Dependency Injection
+		public LoginController(ILoginRepository repository)
+		{
+			_repository = repository;
+		}
 
 		[HttpPost]
 		public HttpResponseMessage Login([FromBody] LoginModel loginModel)
@@ -28,7 +37,8 @@ namespace M32COM_Backend.Controllers
 			string email = loginModel.email;
 			string password = loginModel.password;
 			CustomResponse response;
-			User loginUser = LoginUtility.GetUserByEmailAndPassword(email, password);
+			User loginUser = _repository.Login(loginModel);
+
 			if (loginUser != null)
 			{
 				//LoginUser

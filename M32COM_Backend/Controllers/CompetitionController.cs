@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Data.Entity;
 using M32COM_Backend.Mappers;
 using M32COM_Backend.DTOs;
+using M32COM_Backend.Repositories;
 
 namespace M32COM_Backend.Controllers
 {
@@ -21,17 +22,24 @@ namespace M32COM_Backend.Controllers
 	[RoutePrefix("api/competition")]
 	public class CompetitionController : ApiController
 	{
-		private M32COMDBSERVER DB = new M32COMDBSERVER();
+
+		ICompetitionRepository _repository;
+		IUserRepository _userRepository;
+		public CompetitionController(ICompetitionRepository repository,IUserRepository userRepository)
+		{
+			_repository = repository;
+			_userRepository = userRepository;
+		}
 
 
 		[HttpGet]
 		[Route("get/all")]
 		public HttpResponseMessage GetAllCompetitions()
 		{
-			//Retrieves all comps from db
-			var allComps = DB.Competitions.ToList();
+			//Retrieves all competitions from db
+			var allComps = _repository.GetAllCompetitions();
 
-			//Null check
+			//Null check for Sanity!
 			if (allComps == null)
 				allComps = new List<Competition>();
 
@@ -42,7 +50,6 @@ namespace M32COM_Backend.Controllers
 			//Returns data
 			CustomResponse response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, competitionDTOs, ConstantResponse.COMPETITION_ALL_RETRIEVE_SUCCESS);
 			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
-
 		}
 
 		[HttpGet]
@@ -50,9 +57,9 @@ namespace M32COM_Backend.Controllers
 		public HttpResponseMessage GetActiveCompetitions()
 		{
 			//Retrieves active comps from db
-			var activeCompetitions = DB.Competitions.Where(x => x.endDate > DateTime.Now).OrderByDescending(x => x.startDate).ToList();
+			var activeCompetitions = _repository.GetActiveCompetitions();
 
-			//Null check
+			//Null check for Sanity !
 			if (activeCompetitions == null)
 				activeCompetitions = new List<Competition>();
 			
@@ -70,12 +77,14 @@ namespace M32COM_Backend.Controllers
 		public HttpResponseMessage GetLastPassiveCompetitionsByRowCount(int rowCount)
 		{
 			//Retrieves Last  {rowCount} competitions which are currently not active.
-			var competitions = DB.Competitions.Where(x => x.endDate < DateTime.Now).OrderByDescending(d => d.startDate).Take(rowCount).ToList();
+			var competitions = _repository.GetLastPassiveCompetitionsByRowCount(rowCount);
 
 			CustomResponse response;
+
 			if (competitions == null)
 				competitions = new List<Competition>();
 
+			//Maps to DTO
 			ICollection<CompetitionDTO> competitionDTOs = new List<CompetitionDTO>();
 			competitions.ForEach(c => competitionDTOs.Add(GenericMapper.MapToCompetitionDTO(c)));
 
@@ -88,7 +97,7 @@ namespace M32COM_Backend.Controllers
 		public HttpResponseMessage Get(int competitionId)
 		{
 			//Gets the competition related with the given id
-			var competition = DB.Competitions.Where(x => x.id == competitionId).FirstOrDefault();
+			var competition = _repository.GetById(competitionId);
 			CustomResponse response;
 
 			//Null check
@@ -115,15 +124,15 @@ namespace M32COM_Backend.Controllers
 		{
 			var token = Request.Headers.Authorization.Parameter;
 			string userEmail = UserUtility.GetEmailByToken(token);
-			
-			User user = DB.Users.Include(x => x.team).Where(x => x.email == userEmail).FirstOrDefault();
+
+			User user = _userRepository.GetByEmail(userEmail);
 			
 			CustomResponse response;
 
 			//checks whether user is the team leader
 			if (user.team != null && user.team.leaderId == user.id)
 			{
-				Competition comp = DB.Competitions.Where(x => x.id == competitionId).FirstOrDefault();
+				Competition comp = _repository.GetById(competitionId);
 
 				//Null check for competition
 				if (comp == null)
@@ -131,6 +140,7 @@ namespace M32COM_Backend.Controllers
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.NotFound, true, HttpStatusCode.NotFound, ConstantResponse.COMPETITITON_APPLIED_NO_COMP_FOUND);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.NotFound, response);
 				}
+
 				//Checks whether competition is active or not
 				else if(comp.endDate < DateTime.Now)
 				{
@@ -139,22 +149,15 @@ namespace M32COM_Backend.Controllers
 				}
 
 				//Checks whether the team has already applied or not
-				var teamAlreadyApplied = DB.TeamCompetitions.Where(x => x.competitionId == competitionId && x.teamId == user.teamId).FirstOrDefault();
-				if(teamAlreadyApplied != null)
+				bool teamAlreadyApplied = _repository.HasAlreadyApplied(competitionId, user.teamId);
+				if(teamAlreadyApplied)
 				{
 					response = ResponseMessageHelper.CreateResponse(HttpStatusCode.BadRequest, true, HttpStatusCode.BadRequest, ConstantResponse.COMPETITION_APPLIED_ALREADY);
 					return Request.CreateResponse<CustomResponse>(HttpStatusCode.BadRequest, response);
 				}
 
-				Team userTeam = user.team;
-				TeamCompetition teamComp = new TeamCompetition();
-				teamComp.competition = comp;
-				teamComp.competitionId = comp.id;
-				teamComp.team = userTeam;
-				teamComp.teamId = userTeam.id;
-				teamComp.finishTime = CompetitionUtility.GetRandomDay(comp.startDate, comp.endDate);
-				DB.TeamCompetitions.Add(teamComp);
-				DB.SaveChanges();
+				//Adds the application to the DB
+				_repository.Apply(competitionId, user.team);
 
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, HttpStatusCode.OK, ConstantResponse.COMPETITION_APPLIED_SUCCESS);
 				return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
@@ -173,7 +176,7 @@ namespace M32COM_Backend.Controllers
 		public HttpResponseMessage GetResultByCompetitionId(int competitionId)
 		{
 			//Retrieves the result of the competition related with the given id
-			var teamCompetitions = DB.TeamCompetitions.Where(x => x.competitionId == competitionId).OrderBy(d => d.finishTime).ToList();
+			var teamCompetitions = _repository.GetResultByCompetitionId(competitionId);
 
 			CustomResponse response;
 

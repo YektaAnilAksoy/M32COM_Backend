@@ -24,6 +24,7 @@ namespace M32COM_Backend.constants
 		public const string TEAM_INVITE_SUCCESS = "Team invitation has successfully been sent to the given user";
 		public const string TEAM_INVITE_SENDER_ERR = "Notification sender does not have his own team";
 		public const string TEAM_INVITE_YOURSELF = "You cannot invite yourself to join your team!";
+		public const string TEAN_INVITE_INPROGRESS = "You have already sent an invitation which has not answered by the receiver yet!";
 		public const string TEAM_INVITE_RECEIVER_ERR = "There is no such receiver with the given email";
 		public const string TEAM_INVITE_RECEIVER_HAS_TEAM = "Invited user already has a team!";
 		public const string TEAM_RESPOND_MISSING_ACTIONTOKEN = "Missing action token in header!";

@@ -8,16 +8,18 @@ namespace M32COM_Backend.Utility
 {
 	public static class NotificationUtility
 	{
-		public static Notification CreateForTeam(User sender)
+		//Creates a notification for team invitation
+		public static Notification CreateForTeam(User sender,int receiverId)
 		{
-				Notification notification = new Notification();
+			Notification notification = new Notification();
+			notification.sentById = sender.id;
+			notification.receivedById = receiverId;
+			notification.sentTime = DateTime.Now;
+			notification.isActive = true;
+			notification.description = sender.name + " " + sender.surname + " has invited you to join " + sender.team.name;
+			notification.actionToken = CreateGuid();
 
-				notification.sentTime = DateTime.Now;
-				notification.isActive = true;
-				notification.description = sender.name + " " + sender.surname + " has invited you to join " + sender.team.name;
-				notification.actionToken = CreateGuid();
-
-				return notification;
+			return notification;
 		}
 
 

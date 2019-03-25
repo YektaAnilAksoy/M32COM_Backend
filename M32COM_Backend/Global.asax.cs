@@ -1,5 +1,8 @@
-﻿using System;
+﻿
+using M32COM_Backend.StartupClasses;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -14,10 +17,13 @@ namespace M32COM_Backend
 		protected void Application_Start()
 		{
 			AreaRegistration.RegisterAllAreas();
+			UnityConfig.RegisterComponents();
 			GlobalConfiguration.Configure(WebApiConfig.Register);
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 			RouteConfig.RegisterRoutes(RouteTable.Routes);
 			BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+			//InitialDataLoader.LoadAllDatas();
 		}
 	}
 }
