@@ -32,7 +32,6 @@ namespace M32COM_Backend.Models
 		[Required(ErrorMessage = "Competition end date is required!")]
 		public DateTime endDate { get; set; }
 
-
 		public  virtual ICollection<TeamCompetition> teams { get; set; }
 	}
 }

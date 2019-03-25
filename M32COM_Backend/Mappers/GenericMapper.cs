@@ -9,6 +9,7 @@ namespace M32COM_Backend.Mappers
 {
 	public static class GenericMapper
 	{
+
 		public static UserDTO MapToUserDTO(User user)
 		{
 			if (user == null)
@@ -113,7 +114,7 @@ namespace M32COM_Backend.Mappers
 
 			foreach(User user in team.teamMembers)
 			{
-				teamMembers.Add(user.name);
+				teamMembers.Add(user.name+" "+user.surname);
 			}
 
 			return new TeamResultDTO
@@ -124,7 +125,7 @@ namespace M32COM_Backend.Mappers
 			};
 		}
 
-		public static CompetitionResultDTO MapToCompetitionResultDTO(List<TeamCompetition> teamCompetitions)
+		public static CompetitionResultDTO MapToCompetitionResultDTO(List<TeamCompetition> teamCompetitions,Competition competition)
 		{
 			if (teamCompetitions == null)
 				return null;
@@ -138,7 +139,7 @@ namespace M32COM_Backend.Mappers
 
 			return new CompetitionResultDTO
 			{
-				competition = MapToCompetitionDTO(teamCompetitions.First().competition),
+				competition = MapToCompetitionDTO(competition),
 				teams = teamResults
 			};
 		}

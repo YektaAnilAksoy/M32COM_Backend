@@ -157,7 +157,7 @@ namespace M32COM_Backend.Controllers
 				}
 
 				//Adds the application to the DB
-				_repository.Apply(competitionId, user.team);
+				_repository.Apply(comp.id, user.team.id);
 
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, HttpStatusCode.OK, ConstantResponse.COMPETITION_APPLIED_SUCCESS);
 				return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);
@@ -180,14 +180,18 @@ namespace M32COM_Backend.Controllers
 
 			CustomResponse response;
 
-			if (teamCompetitions == null)
+			//Retrieves competition
+			Competition competition = _repository.GetById(competitionId);
+
+			if (teamCompetitions == null || competition == null)
 			{
 				response = ResponseMessageHelper.CreateResponse(HttpStatusCode.NotFound, true, HttpStatusCode.NotFound, ConstantResponse.COMPETITION_RESULT_NOT_FOUND);
 				return Request.CreateResponse<CustomResponse>(HttpStatusCode.NotFound, response);
 			}
 
+
 			//Mapping to related DTO
-			CompetitionResultDTO result = GenericMapper.MapToCompetitionResultDTO(teamCompetitions);
+			CompetitionResultDTO result = GenericMapper.MapToCompetitionResultDTO(teamCompetitions, competition);
 
 			response = ResponseMessageHelper.CreateResponse(HttpStatusCode.OK, false, result, ConstantResponse.COMPETITION_RESULT_SUCCESS);
 			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK, response);

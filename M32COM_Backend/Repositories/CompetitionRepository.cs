@@ -11,23 +11,25 @@ namespace M32COM_Backend.Repositories
 	{
 		private M32COMDBSERVER DB = new M32COMDBSERVER();
 
-		public void Apply(int competitionId, Team team)
+		public void Apply(int competitionId, int? teamId)
 		{
-			Competition comp = GetById(competitionId);
-
+			Team team = DB.Teams.Where(x => x.id == teamId).FirstOrDefault();
+			Competition competition = GetById(competitionId);
 			TeamCompetition teamComp = new TeamCompetition();
-			teamComp.competition = comp;
-			teamComp.competitionId = comp.id;
+
+			teamComp.competition = competition;
+			teamComp.competitionId = competition.id;
 			teamComp.team = team;
 			teamComp.teamId = team.id;
-			teamComp.finishTime = CompetitionUtility.GetRandomDay(comp.startDate, comp.endDate);
+			teamComp.finishTime = CompetitionUtility.GetRandomDay(competition.startDate, competition.endDate);
+
 			DB.TeamCompetitions.Add(teamComp);
 			DB.SaveChanges();
 		}
 
 		public List<Competition> GetActiveCompetitions()
 		{
-			return DB.Competitions.Where(x => x.endDate > DateTime.Now).OrderByDescending(x => x.startDate).ToList();
+			return DB.Competitions.Where(x => x.endDate > DateTime.Now && x.startDate < DateTime.Now).OrderByDescending(x => x.startDate).ToList();
 		}
 
 		public List<Competition> GetAllCompetitions()

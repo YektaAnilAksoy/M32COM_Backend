@@ -15,7 +15,7 @@ namespace M32COM_Backend.Repositories
 		List<Competition> GetActiveCompetitions();
 		List<Competition> GetLastPassiveCompetitionsByRowCount(int rowCount);
 		bool HasAlreadyApplied(int competitionId,int? teamId);
-		void Apply(int competitionId, Team team);
+		void Apply(int competitionId, int? teamId);
 		List<TeamCompetition> GetResultByCompetitionId(int id);
 	}
 }
