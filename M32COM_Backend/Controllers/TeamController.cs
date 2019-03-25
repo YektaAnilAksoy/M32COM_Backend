@@ -246,9 +246,10 @@ namespace M32COM_Backend.Controllers
 				//receiver is added to the team where sender is the leader
 				_repository.AcceptTeamInvitation(loginUserEmail, notification.sentBy.teamId);
 				//Makes notification passive
-				_notificationRepository.Update(notification, false);
-			}			
-				return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK,response);
+				
+			}
+			_notificationRepository.Update(notification, false);
+			return Request.CreateResponse<CustomResponse>(HttpStatusCode.OK,response);
 
 		}
 
