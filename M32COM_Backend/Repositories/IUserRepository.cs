@@ -12,5 +12,6 @@ namespace M32COM_Backend.Repositories
 		User GetByEmail(string email);
 		User GetById(int id);
 		void UpdateTeam(string email, int? teamId);
+		List<User> GetAll();
 	}
 }

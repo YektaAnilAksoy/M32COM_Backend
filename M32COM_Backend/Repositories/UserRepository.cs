@@ -11,6 +11,11 @@ namespace M32COM_Backend.Repositories
 	{
 		private M32COMDBSERVER DB = new M32COMDBSERVER();
 
+		public List<User> GetAll()
+		{
+			return DB.Users.ToList();
+		}
+
 		public User GetByEmail(string email)
 		{
 			return DB.Users.Include(x=>x.team).Include(x => x.team.boat).Include(x=>x.receivedNotification).FirstOrDefault(x => x.email == email);
@@ -21,6 +26,8 @@ namespace M32COM_Backend.Repositories
 			return DB.Users.Include(x=>x.team).Include(x => x.team.boat).Include(x=>x.receivedNotification).FirstOrDefault(x => x.id == id);
 		}
 
+		
+		
 		public void UpdateTeam(string email, int? teamId)
 		{
 			User user = GetByEmail(email);

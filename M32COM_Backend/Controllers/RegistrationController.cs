@@ -31,13 +31,6 @@ namespace M32COM_Backend.Controllers
 		public HttpResponseMessage Register([FromBody] User user)
 		{
 			CustomResponse response;
-
-			//Random salt is created
-			var salt = PasswordHashingUtility.GenerateSalt();
-
-			//Hash is created by using random salt and password
-			user.password = PasswordHashingUtility.GenerateSaltedHash(user.password,salt);
-			user.passwordSalt = salt;
 			//Inserting the user into DB
 			var result = _repository.Register(user);
 
